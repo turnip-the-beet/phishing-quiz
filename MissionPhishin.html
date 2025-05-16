@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Protocol Training - Phishing Defense</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Body & Container Styling */
+        body {
+            font-family: 'Roboto Mono', monospace; /* Nerdy, code-like font */
+            background-color: #1a1a2e; /* Deep space background */
+            color: #e0e0e0; /* Light grey text */
+            margin: 0;
+            padding: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="1" height="1" x="0" y="0" fill="%232c3e50" /></svg>'); /* Subtle pixel pattern */
+            background-repeat: repeat;
+        }
+
+        .container {
+            background-color: #0f3460; /* Darker blue, reminiscent of a terminal window */
+            padding: 35px;
+            border-radius: 12px; /* Slightly softer corners */
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+            max-width: 850px;
+            width: 100%;
+            border: 2px solid #e94560; /* Accent color border */
+            animation: glow 1.5s infinite alternate; /* Subtle glow effect */
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 5px #e94560; }
+            to { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 20px #e94560; }
+        }
+
+        h1, h2 {
+            font-family: 'Press Start 2P', cursive; /* Retro arcade font */
+            color: #e94560; /* Vibrant accent color */
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 0 0 8px rgba(233, 69, 96, 0.7);
+        }
+
+        p {
+            color: #c0c0c0; /* Lighter grey for general text */
+            text-align: center;
+            margin-bottom: 35px;
+            line-height: 1.7;
+            font-size: 0.95em;
+        }
+
+        /* Quiz Specifics */
+        .quiz-section {
+            margin-bottom: 30px;
+            border-bottom: 1px dashed #4e5d7a; /* Dashed separator */
+            padding-bottom: 25px;
+        }
+
+        .quiz-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question {
+            font-size: 1.15em;
+            margin-bottom: 20px;
+            color: #72efdd; /* Another vibrant accent */
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(114, 239, 221, 0.5);
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 12px;
+            padding: 12px;
+            background-color: #1e3a5f; /* Slightly lighter blue for options */
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border 0.3s ease;
+            border: 1px solid #1e3a5f;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .options label:hover {
+            background-color: #2b4f7e;
+            border: 1px solid #72efdd;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 12px;
+            accent-color: #e94560; /* Customizes the radio button color */
+            transform: scale(1.2); /* Make radio buttons slightly larger */
+            vertical-align: middle;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            display: none; /* Hidden by default */
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            background-color: #2e8b57; /* Darker green */
+            color: #d4edda;
+            border: 1px solid #1c6b3e;
+            box-shadow: 0 0 8px rgba(46, 139, 87, 0.7);
+        }
+
+        .feedback.incorrect {
+            background-color: #8b2e2e; /* Darker red */
+            color: #f8d7da;
+            border: 1px solid #6b1c1c;
+            box-shadow: 0 0 8px rgba(139, 46, 46, 0.7);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 18px 25px;
+            background-color: #e94560; /* Vibrant accent for button */
+            color: #1a1a2e; /* Dark text on vibrant button */
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-family: 'Press Start 2P', cursive;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:hover {
+            background-color: #ff6b82; /* Lighter red on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #results {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px dashed #4e5d7a;
+            text-align: center;
+            display: none; /* Hidden by default */
+            color: #c0c0c0;
+        }
+
+        #results h2 {
+            color: #72efdd;
+            margin-bottom: 25px;
+            text-shadow: 0 0 8px rgba(114, 239, 221, 0.7);
+        }
+
+        #scoreDisplay {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #e94560;
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 0 0 10px rgba(233, 69, 96, 0.9);
+        }
+
+        .review-section {
+            text-align: left;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #1e3a5f; /* Same as options background */
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .review-section h3 {
+            color: #72efdd;
+            margin-bottom: 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1em;
+            text-shadow: 0 0 5px rgba(114, 239, 221, 0.5);
+        }
+
+        .review-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #0f3460; /* Same as container background */
+            border-radius: 6px;
+            border: 1px solid #4e5d7a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .review-item .question-text {
+            font-weight: bold;
+            color: #e0e0e0;
+            font-size: 1.05em;
+            margin-bottom: 8px;
+        }
+
+        .review-item .your-answer, .review-item .correct-answer {
+            font-size: 0.95em;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        .review-item .your-answer {
+            color: #ff6b82; /* Red for incorrect */
+            font-weight: bold;
+        }
+
+        .review-item.correct .your-answer {
+            color: #72efdd; /* Green for correct */
+        }
+
+        .review-item .correct-answer {
+            color: #c0c0c0; /* Light grey for correct answer text */
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>// MISSION BRIEFING: PHISHING COUNTERMEASURES //</h1>
+        <p>A recent simulation detected a vulnerability in your threat matrix. This module is designed to recalibrate your defenses against advanced social engineering tactics. Complete this sequence to fortify your cybersecurity protocols and become a true Data Guardian!</p>
+
+        <form id="quizForm">
+            </form>
+
+        <button type="button" id="submitQuiz">// DECRYPT & SUBMIT // </button>
+
+        <div id="results">
+            <h2>// POST-MISSION REPORT //</h2>
+            <p id="scoreDisplay"></p>
+            <div class="review-section" id="reviewSection">
+                <h3>// THREAT ANALYSIS: REVIEW LOGS //</h3>
+                </div>
+            <p>Your vigilance is the ultimate firewall. Keep your guard up, recruit!</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Before interacting with an email, which of the following is crucial for verifying its legitimacy?",
+                options: [
+                    "Quickly clicking all links to see where they lead.",
+                    "Replying to the sender to ask if the email is real.",
+                    "Inspecting the sender's domain, hovering over links to preview URLs, looking for urgent or threatening language, checking for misspellings, and confirming if the email aligns with expected communications.",
+                    "Assuming it's legitimate if it mentions a service you use frequently."
+                ],
+                correctAnswer: "Inspecting the sender's domain, hovering over links to preview URLs, looking for urgent or threatening language, checking for misspellings, and confirming if the email aligns with expected communications."
+            },
+            {
+                question: "If you have inadvertently clicked on a suspicious link, what is the immediate and most critical action to take?",
+                options: [
+                    "Restarting your computer and hoping for the best.",
+                    "Immediately inform your IT or cybersecurity department.",
+                    "Changing all your passwords without informing anyone.",
+                    "Ignoring it, as long as nothing obvious happened."
+                ],
+                correctAnswer: "Immediately inform your IT or cybersecurity department."
+            },
+            {
+                question: "To verify the identity of a sender requesting sensitive information or action, what is the most secure approach?",
+                options: [
+                    "Replying to the email and asking for their official ID.",
+                    "Contact the individual or organization through an independently verified communication channel, such as a known phone number, a separate messaging platform (e.g., Slack), or by directly logging into the relevant official application.",
+                    "Searching their name on social media.",
+                    "Assuming legitimacy if their name appears correctly."
+                ],
+                correctAnswer: "Contact the individual or organization through an independently verified communication channel, such as a known phone number, a separate messaging platform (e.g., Slack), or by directly logging into the relevant official application."
+            },
+            {
+                question: "When confronted with an urgent or unusual request via email, and you are unsure of its legitimacy, what is the recommended course of action?",
+                options: [
+                    "Forwarding the email to colleagues for their opinion.",
+                    "Responding quickly to avoid missing out on the urgent offer.",
+                    "Verify the request by contacting the purported sender through an alternative, trusted communication method, independent of the email itself.",
+                    "Trusting your gut feeling and proceeding with caution."
+                ],
+                correctAnswer: "Verify the request by contacting the purported sender through an alternative, trusted communication method, independent of the email itself."
+            },
+            {
+                question: "A successful phishing attack, even seemingly minor, can escalate into significant broader security risks for an organization by enabling which of the following?",
+                options: [
+                    "Only affecting the individual's personal files, with no impact on the organization.",
+                    "Merely causing a brief inconvenience for the IT department.",
+                    "Creating an initial breach point that attackers can exploit for lateral movement within the network, launching advanced persistent threats, compromising additional credentials, exfiltrating sensitive data, and exploiting systemic security vulnerabilities.",
+                    "Primarily leading to an increase in spam emails for everyone."
+                ],
+                correctAnswer: "Creating an initial breach point that attackers can exploit for lateral movement within the network, launching advanced persistent threats, compromising additional credentials, exfiltrating sensitive data, and exploiting systemic security vulnerabilities."
+            },
+            {
+                question: "What is 'social engineering' in the context of cybersecurity?",
+                options: [
+                    "A technique for developing strong social media passwords.",
+                    "Manipulating individuals through psychological tactics to trick them into divulging confidential information or performing actions that compromise security.",
+                    "The process of connecting computer systems to a network.",
+                    "Using algorithms to predict human behavior online."
+                ],
+                correctAnswer: "Manipulating individuals through psychological tactics to trick them into divulging confidential information or performing actions that compromise security."
+            },
+            {
+                question: "If you receive a suspicious email in your corporate inbox, what is the recommended procedure for reporting it?",
+                options: [
+                    "Delete the email immediately and forget about it.",
+                    "Reply to the sender asking them to confirm their identity.",
+                    "Use your organization's designated 'Report Phishing' button (if available) or forward the email to your IT security team as per company policy.",
+                    "Forward it to a friend to see if they recognize it."
+                ],
+                correctAnswer: "Use your organization's designated 'Report Phishing' button (if available) or forward the email to your IT security team as per company policy."
+            },
+            {
+                question: "Why is opening unexpected email attachments from unknown or suspicious senders a significant security risk?",
+                options: [
+                    "It might make your email client run slower.",
+                    "Attachments can contain malicious software (malware) like viruses, ransomware, or spyware that can infect your device and compromise data.",
+                    "It could fill up your hard drive space quickly.",
+                    "It might accidentally send a reply to the sender."
+                ],
+                correctAnswer: "Attachments can contain malicious software (malware) like viruses, ransomware, or spyware that can infect your device and compromise data."
+            },
+            {
+                question: "How does using strong, unique passwords across different online services contribute to mitigating risks from phishing attacks?",
+                options: [
+                    "It ensures your internet connection is faster.",
+                    "It makes your computer more resistant to physical damage.",
+                    "It prevents 'credential stuffing' attacks, where compromised login credentials from one service can be used to gain unauthorized access to other accounts you possess.",
+                    "It helps search engines find your accounts more easily."
+                ],
+                correctAnswer: "It prevents 'credential stuffing' attacks, where compromised login credentials from one service can be used to gain unauthorized access to other accounts you possess."
+            },
+            {
+                question: "Which characteristic often indicates that an email's sender address has been 'spoofed'?",
+                options: [
+                    "The email comes from a well-known company.",
+                    "The email address contains your full name.",
+                    "The displayed sender name appears legitimate, but upon inspection, the actual email domain (e.g., sender@notlegitcompany.com instead of sender@legitcompany.com) is incorrect or suspicious.",
+                    "The sender's name is capitalized incorrectly."
+                ],
+                correctAnswer: "The displayed sender name appears legitimate, but upon inspection, the actual email domain (e.g., sender@notlegitcompany.com instead of sender@legitcompany.com) is incorrect or suspicious."
+            }
+        ];
+
+        const quizForm = document.getElementById('quizForm');
+        const submitButton = document.getElementById('submitQuiz');
+        const resultsDiv = document.getElementById('results');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const reviewSection = document.getElementById('reviewSection');
+
+        function loadQuiz() {
+            questions.forEach((q, index) => {
+                const questionSection = document.createElement('div');
+                questionSection.classList.add('quiz-section');
+                questionSection.innerHTML = `
+                    <div class="question">${index + 1}. ${q.question}</div>
+                    <div class="options" id="q${index}-options">
+                        ${q.options.map((option) => `
+                            <label>
+                                <input type="radio" name="question${index}" value="${option}">
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="feedback" id="feedback${index}"></div>
+                `;
+                quizForm.appendChild(questionSection);
+            });
+        }
+
+        function getSelectedAnswer(questionIndex) {
+            const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+            return selectedOption ? selectedOption.value : null;
+        }
+
+        function checkAnswers() {
+            let score = 0;
+            const userAnswers = [];
+            let allAnswered = true;
+
+            questions.forEach((q, index) => {
+                const userAnswer = getSelectedAnswer(index);
+                if (userAnswer === null) {
+                    allAnswered = false;
+                }
+
+                userAnswers.push({
+                    question: q.question,
+                    yourAnswer: userAnswer,
+                    correctAnswer: q.correctAnswer
+                });
+
+                const feedbackDiv = document.getElementById(`feedback${index}`);
+                feedbackDiv.style.display = 'block';
+                feedbackDiv.classList.remove('correct', 'incorrect');
+
+                if (userAnswer === q.correctAnswer) {
+                    score++;
+                    feedbackDiv.classList.add('correct');
+                    feedbackDiv.textContent = "// STATUS: CORRECT // Data integrity maintained!";
+                } else {
+                    feedbackDiv.classList.add('incorrect');
+                    feedbackDiv.textContent = `// STATUS: INCORRECT // Correct protocol: "${q.correctAnswer}"`;
+                }
+            });
+
+            if (!allAnswered) {
+                alert("Alert: Not all questions have been answered. Please complete the full diagnostic before submitting.");
+                return;
+            }
+
+            displayResults(score, userAnswers);
+        }
+
+        function displayResults(score, userAnswers) {
+            submitButton.style.display = 'none'; // Hide submit button
+            resultsDiv.style.display = 'block'; // Show results section
+            scoreDisplay.textContent = `// SCORE: ${score} / ${questions.length} //`;
+
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            reviewSection.innerHTML = '<h3>// THREAT ANALYSIS: REVIEW LOGS //</h3>'; // Clear previous review
+            userAnswers.forEach((item, index) => {
+                const reviewItem = document.createElement('div');
+                reviewItem.classList.add('review-item');
+                if (item.yourAnswer === item.correctAnswer) {
+                    reviewItem.classList.add('correct');
+                }
+
+                reviewItem.innerHTML = `
+                    <div class="question-text">${index + 1}. ${item.question}</div>
+                    <div class="your-answer">Your Input: ${item.yourAnswer || '[NO INPUT DETECTED]'}</div>
+                    <div class="correct-answer">Optimal Protocol: ${item.correctAnswer}</div>
+                `;
+                reviewSection.appendChild(reviewItem);
+            });
+        }
+
+        // Event Listener for quiz submission
+        submitButton.addEventListener('click', checkAnswers);
+
+        // Load the quiz when the page loads
+        document.addEventListener('DOMContentLoaded', loadQuiz);
+    </script>
+</body>
+</html>
