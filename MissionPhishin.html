@@ -232,7 +232,15 @@
         <p>A recent simulation detected a vulnerability in your threat matrix. This module is designed to recalibrate your defenses against advanced social engineering tactics. Complete this sequence to fortify your cybersecurity protocols and become a true Data Guardian!</p>
 
         <form id="quizForm">
-            </form>
+            <div class="user-info-section" style="margin-bottom: 30px; padding: 20px; background-color: #1e3a5f; border-radius: 8px;">
+                <h3 style="color: #72efdd; font-family: 'Press Start 2P', cursive; text-align: center; margin-bottom: 20px;">// IDENTIFICATION REQUIRED //</h3>
+                <label for="userName" style="display: block; margin-bottom: 15px; color: #c0c0c0;">
+                    <span style="font-weight: bold; color: #e94560;">User Designation:</span>
+                    <input type="text" id="userName" name="userName" required placeholder="Enter your Name or Employee ID"
+                           style="width: calc(100% - 22px); padding: 10px; margin-top: 5px; background-color: #0f3460; border: 1px solid #4e5d7a; border-radius: 4px; color: #e0e0e0; font-family: 'Roboto Mono', monospace;">
+                </label>
+            </div>
+        </form>
 
         <button type="button" id="submitQuiz">// DECRYPT & SUBMIT // </button>
 
@@ -356,6 +364,12 @@
         const scoreDisplay = document.getElementById('scoreDisplay');
         const reviewSection = document.getElementById('reviewSection');
 
+        // Add your Google Form's submission URL and Entry IDs here
+        const GOOGLE_FORM_URL = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSfMHJq9W-qKxWqhm5m6vMl_gGgfB3krYR6wyJNkkABUmqdk-Q/formResponse';
+        const ENTRY_ID_NAME = 'entry.111111575';
+        const ENTRY_ID_SCORE = 'entry.1765582635';
+        const ENTRY_ID_INCORRECT = 'entry.574895424';
+
         function loadQuiz() {
             questions.forEach((q, index) => {
                 const questionSection = document.createElement('div');
@@ -385,11 +399,22 @@
             let score = 0;
             const userAnswers = [];
             let allAnswered = true;
+            const incorrectQuestionsReview = []; // To store details of incorrect answers
+
+            // Get user's name/ID from the input field FIRST
+            const userNameInput = document.getElementById('userName');
+            const userName = userNameInput ? userNameInput.value.trim() : ''; // Get value, default to empty if input not found
+
+            if (!userName) {
+                alert("Alert: Please enter your name/ID before submitting the quiz.");
+                if (userNameInput) userNameInput.focus(); // Focus on the input if it exists
+                return; // Stop the function here if name is missing
+            }
 
             questions.forEach((q, index) => {
                 const userAnswer = getSelectedAnswer(index);
                 if (userAnswer === null) {
-                    allAnswered = false;
+                    allAnswered = false; // Flag if any question is unanswered
                 }
 
                 userAnswers.push({
@@ -402,7 +427,7 @@
                 feedbackDiv.style.display = 'block';
                 feedbackDiv.classList.remove('correct', 'incorrect');
 
-                // --- MODIFICATION STARTS HERE ---
+                // --- MODIFICATION FOR QUESTION 10 (INDEX 9) ---
                 if (index === 9) { // This targets the 10th question (index 9, as arrays are 0-indexed)
                     score++; // Always give a point for this question
                     feedbackDiv.classList.add('correct');
@@ -414,16 +439,20 @@
                 } else {
                     feedbackDiv.classList.add('incorrect');
                     feedbackDiv.textContent = `// STATUS: INCORRECT // Correct protocol: "${q.correctAnswer}"`;
+                    // Only add to incorrect review if it's NOT the wacky question and it's actually wrong
+                    incorrectQuestionsReview.push(`${index + 1}. ${q.question} (Your answer: "${userAnswer || 'No answer selected'}")`);
                 }
-                // --- MODIFICATION ENDS HERE ---
             });
 
+            // Check if all questions were answered AFTER checking for name
             if (!allAnswered) {
                 alert("Alert: Not all questions have been answered. Please complete the full diagnostic before submitting.");
                 return;
             }
 
-            displayResults(score, userAnswers);
+
+            displayResults(score, userAnswers); // Display results on the page
+            sendResultsToGoogleForm(userName, score, incorrectQuestionsReview.join('\n')); // Send results to Google Form
         }
 
         function displayResults(score, userAnswers) {
@@ -438,7 +467,8 @@
             userAnswers.forEach((item, index) => {
                 const reviewItem = document.createElement('div');
                 reviewItem.classList.add('review-item');
-                if (item.yourAnswer === item.correctAnswer) {
+                // Review section should also mark Q10 as correct visually, even if user chose differently
+                if (item.yourAnswer === item.correctAnswer || index === 9) {
                     reviewItem.classList.add('correct');
                 }
 
@@ -450,6 +480,31 @@
                 reviewSection.appendChild(reviewItem);
             });
         }
+
+        // --- NEW FUNCTION TO SEND DATA ---
+        function sendResultsToGoogleForm(userName, score, incorrectDetails) {
+            const formData = new FormData();
+            formData.append(ENTRY_ID_NAME, userName);
+            formData.append(ENTRY_ID_SCORE, `${score}/${questions.length}`);
+            formData.append(ENTRY_ID_INCORRECT, incorrectDetails);
+
+            fetch(GOOGLE_FORM_URL, {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors' // Important for cross-origin requests to Google Forms
+            })
+            .then(response => {
+                console.log('Quiz results sent to Google Form successfully (no-cors mode).');
+                // You can add a small visual confirmation to the user here if you want
+                // E.g., a tiny "Results submitted!" message next to the score.
+            })
+            .catch(error => {
+                console.error('Error sending quiz results:', error);
+                // Handle errors, e.g., display a message to the user
+                alert("An error occurred while submitting results. Please inform IT if this persists.");
+            });
+        }
+        // --- END NEW FUNCTION ---
 
         // Event Listener for quiz submission
         submitButton.addEventListener('click', checkAnswers);
